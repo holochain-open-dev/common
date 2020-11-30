@@ -1,30 +1,44 @@
-import { deserializeHash } from '../utils';
+import { serializeHash } from '../utils';
 import * as msgpack from '@msgpack/msgpack';
-export function commonResolvers(appWebsocket, zomeName = 'common') {
-    function callZome(commonMembrane, fn_name, payload) {
-        console.log(commonMembrane);
+export async function getCellIdForDnaHash(appWebsocket, installedAppId, dnaHash) {
+    const appInfo = await appWebsocket.appInfo({
+        installed_app_id: installedAppId,
+    });
+    const cell = appInfo.cell_data.find(cellData => serializeHash(cellData[0][0]) === dnaHash);
+    if (!cell)
+        throw new Error(`Could not find cell for dna ${dnaHash}`);
+    return cell[0];
+}
+export function commonResolvers(appWebsocket, installedAppId, zomeName = 'common') {
+    async function callZome(dnaHash, fn_name, payload) {
+        const cellId = await getCellIdForDnaHash(appWebsocket, installedAppId, dnaHash);
         return appWebsocket.callZome({
             cap: null,
-            cell_id: [
-                deserializeHash(commonMembrane.id),
-                deserializeHash(commonMembrane.me.id),
-            ],
+            cell_id: cellId,
             zome_name: zomeName,
             fn_name: fn_name,
             payload: payload,
-            provenance: deserializeHash(commonMembrane.me.id),
+            provenance: cellId[1],
         });
     }
     return {
+        Query: {
+            async me() {
+                const appInfo = await appWebsocket.appInfo({
+                    installed_app_id: installedAppId,
+                });
+                const myAgentPubKey = appInfo.cell_data[0][0][1];
+                return {
+                    id: serializeHash(myAgentPubKey),
+                };
+            },
+        },
         CommonMembrane: {
             async get(commonMembrane, { entryId }) {
-                console.log('hi');
-                const entryDetails = await callZome(commonMembrane, 'get_entry_details', entryId);
-                console.log(entryDetails);
+                const entryDetails = await callZome(commonMembrane.id, 'get_entry_details', entryId);
                 if (!entryDetails)
                     throw new Error(`Entry with ID ${entryId} not found`);
                 const entry = msgpack.decode(entryDetails.entry.entry);
-                console.log(entry);
                 return {
                     id: entryId,
                     ...entry,

@@ -5,14 +5,6 @@ export function deserializeHash(hash) {
 export function serializeHash(hash) {
     return `u${Base64.fromUint8Array(hash, true)}`;
 }
-export function cellIdToCommonMembrane(cellId) {
-    return {
-        id: serializeHash(cellId[0]),
-        me: {
-            id: serializeHash(cellId[1]),
-        },
-    };
-}
 /**
  * Setups the given element with the ApolloClient dependency
  * The result is ready to call customElements.define()
