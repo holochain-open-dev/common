@@ -1,10 +1,9 @@
 import { gql } from '@apollo/client/core';
-import { cellIdToCommonMembrane } from '../../dist';
+import { serializeHash } from '../../dist';
 
 export const rootTypeDef = gql`
   type TestMembrane implements CommonMembrane & Membrane {
     id: ID!
-    me: Agent!
 
     get(entryId: ID!): HolochainEntry!
   }
@@ -28,7 +27,9 @@ export function rootResolvers(cellId) {
   return {
     Query: {
       testMembrane() {
-        return cellIdToCommonMembrane(cellId);
+        return {
+          id: serializeHash(cellId[0]),
+        };
       },
     },
     TestEntry: {

@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { SchemaLink } from '@apollo/client/link/schema';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 
-import { commonTypeDefs, commonResolvers, serializeHash } from '../../dist';
+import { commonTypeDefs, commonResolvers } from '../../dist';
 import { rootResolvers, rootTypeDef } from './schema';
 
 const allTypeDefs = [rootTypeDef, commonTypeDefs];
@@ -18,7 +18,10 @@ export async function setupApolloClient(appWebsocket) {
 
   const executableSchema = makeExecutableSchema({
     typeDefs: allTypeDefs,
-    resolvers: [rootResolvers(cellId), commonResolvers(appWebsocket)],
+    resolvers: [
+      rootResolvers(cellId),
+      commonResolvers(appWebsocket, 'test-app'),
+    ],
     inheritResolversFromInterfaces: true,
   });
 

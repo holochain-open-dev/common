@@ -30,9 +30,12 @@ export const commonTypeDefs = gql`
     id: ID!
   }
 
+  extend type Query {
+    me: Agent!
+  }
+
   interface CommonMembrane implements Membrane {
     id: ID!
-    me: Agent!
 
     get(entryId: ID!): HolochainEntry!
   }

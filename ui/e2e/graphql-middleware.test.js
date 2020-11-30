@@ -30,11 +30,11 @@ describe('Apollo middleware', () => {
     const result = await client.query({
       query: gql`
         query GetEntry($entryId: ID!) {
+          me {
+            id
+          }
           testMembrane {
             id
-            me {
-              id
-            }
 
             get(entryId: $entryId) {
               id
@@ -51,7 +51,7 @@ describe('Apollo middleware', () => {
     });
 
     expect(result.data.testMembrane.id).to.be.ok;
-    expect(result.data.testMembrane.me.id).to.be.ok;
+    expect(result.data.me.id).to.be.ok;
     expect(result.data.testMembrane.get.id).to.be.ok;
     expect(result.data.testMembrane.get.content).to.equal('test');
   });

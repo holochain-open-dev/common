@@ -19,6 +19,3 @@ export interface Agent {
 export interface Membrane {
   id: string;
 }
-export interface CommonMembrane extends Membrane {
-  me: Agent;
-}
