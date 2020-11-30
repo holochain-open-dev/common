@@ -1,67 +1,57 @@
 import { Resolvers } from '@apollo/client/core';
-import { AppWebsocket, CellId } from '@holochain/conductor-api';
+import { AppWebsocket } from '@holochain/conductor-api';
+import { CommonMembrane } from '../types';
+import { deserializeHash } from '../utils';
+import * as msgpack from '@msgpack/msgpack';
 
-function secondsToTimestamp(secs: number) {
-  return [secs, 0];
-}
-
-function hashToString(hash: { hash: Buffer; hash_type: Buffer }) {
-  return hash.hash_type.toString('hex') + hash.hash.toString('hex');
-}
-
-// TODO: define your own resolvers
-
-export const calendarEventsResolvers = (
+export function commonResolvers(
   appWebsocket: AppWebsocket,
-  cellId: CellId,
-  zomeName = 'todo_rename_zome'
-): Resolvers => ({
-  Query: {
-    async allCalendarEvents() {
-      const events = await appWebsocket.callZome({
-        cap: null as any,
-        cell_id: cellId,
-        zome_name: zomeName,
-        fn_name: 'get_all_calendar_events',
-        payload: null,
-        provenance: cellId[1],
-      });
+  zomeName = 'common'
+): Resolvers {
+  function callZome(
+    commonMembrane: CommonMembrane,
+    fn_name: string,
+    payload: any
+  ) {
+    console.log(commonMembrane);
+    return appWebsocket.callZome({
+      cap: null as any,
+      cell_id: [
+        deserializeHash(commonMembrane.id) as Buffer,
+        deserializeHash(commonMembrane.me.id) as Buffer,
+      ],
+      zome_name: zomeName,
+      fn_name: fn_name,
+      payload: payload,
+      provenance: deserializeHash(commonMembrane.me.id) as Buffer,
+    });
+  }
+  return {
+    CommonMembrane: {
+      async get(commonMembrane, { entryId }) {
+        console.log('hi')
+        const entryDetails = await callZome(
+          commonMembrane,
+          'get_entry_details',
+          entryId
+        );
+        console.log(entryDetails);
+        if (!entryDetails)
+          throw new Error(`Entry with ID ${entryId} not found`);
+        const entry: any = msgpack.decode(entryDetails.entry.entry);
+        console.log(entry);
 
-      return events.map((event: any) => ({
-        id: hashToString(event[0]),
-        ...event[1],
-      }));
+        return {
+          id: entryId,
+          ...entry,
+          _details: {
+            membrane: {
+              id: commonMembrane.id,
+            },
+            headers: entryDetails.headers,
+          },
+        };
+      },
     },
-  },
-  Mutation: {
-    async createCalendarEvent(
-      _,
-      { title, startTime, endTime, location, invitees }
-    ) {
-      const eventId = await appWebsocket.callZome({
-        cap: null as any,
-        cell_id: cellId,
-        zome_name: zomeName,
-        fn_name: 'create_calendar_event',
-        payload: {
-          title,
-          start_time: secondsToTimestamp(startTime),
-          end_time: secondsToTimestamp(endTime),
-          location,
-          invitees,
-        },
-        provenance: cellId[1],
-      });
-
-      return {
-        id: hashToString(eventId),
-        createdBy: hashToString(cellId[1]),
-        title,
-        startTime,
-        endTime,
-        invitees,
-        location,
-      };
-    },
-  },
-});
+  };
+}

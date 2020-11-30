@@ -1,0 +1,13 @@
+{
+  "name": "resource-bookings",
+  "uuid": "",
+  "properties": null,
+  "zomes": {
+    "common": {
+      "wasm_path": "../target/wasm32-unknown-unknown/release/common.wasm"
+    },
+    "test_util": {
+      "wasm_path": "../target/wasm32-unknown-unknown/release/test_util.wasm"
+    }
+  }
+}

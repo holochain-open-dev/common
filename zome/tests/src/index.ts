@@ -1,47 +1,45 @@
-import { Orchestrator, Config } from "@holochain/tryorama";
+import { Orchestrator, Config, InstallAgentsHapps } from "@holochain/tryorama";
+import path from "path";
+import * as msgpack from "@msgpack/msgpack";
+
+const conductorConfig = Config.gen();
+
+// Construct proper paths for your DNAs
+const commonDna = path.join(__dirname, "../../common.dna.gz");
+
+// create an InstallAgentsHapps array with your DNAs to tell tryorama what
+// to install into the conductor.
+const installation: InstallAgentsHapps = [
+  // agent 0
+  [
+    // happ 0
+    [commonDna],
+  ],
+];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
 
 const orchestrator = new Orchestrator();
 
-export const simpleConfig = {
-  alice: Config.dna("../todo_rename_zome.dna.gz", null),
-  bobbo: Config.dna("../todo_rename_zome.dna.gz", null),
-};
+orchestrator.registerScenario("create an entry and get it", async (s, t) => {
+  const [alice] = await s.players([conductorConfig]);
 
+  // install your happs into the coductors and destructuring the returned happ data using the same
+  // array structure as you created in your installation array.
+  const [[alice_common]] = await alice.installAgentsHapps(installation);
 
-orchestrator.registerScenario(
-  "create and get a calendar event",
-  async (s, t) => {
-    const { conductor } = await s.players({
-      conductor: Config.gen(simpleConfig),
-    });
-    await conductor.spawn();
+  let entryHash = await alice_common.cells[0].call("test_util", "create", null);
+  t.ok(entryHash);
+  await sleep(500);
 
-    let calendarEventHash = await conductor.call(
-      "alice",
-      "todo_rename_zome",
-      "create_calendar_event",
-      {
-        title: "Event 1",
-        start_time: [Math.floor(Date.now() / 1000), 0],
-        end_time: [Math.floor(Date.now() / 1000) + 1000, 0],
-        location: { Custom: "hiii" },
-        invitees: [],
-      }
-    );
-    t.ok(calendarEventHash);
+  let entryDetails = await alice_common.cells[0].call(
+    "common",
+    "get_entry_details",
+    entryHash
+  );
 
-    await sleep(10);
-
-    let calendarEvents = await conductor.call(
-      "bobbo",
-      "todo_rename_zome",
-      "get_all_todo_rename_zome",
-      null
-    );
-    t.equal(calendarEvents.length, 1);
-  }
-);
+  const entry = msgpack.decode(entryDetails.entry.entry);
+  t.deepEqual(entry, { content: "test" });
+});
 
 orchestrator.run();
