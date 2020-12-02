@@ -1,10 +1,5 @@
-import { ApolloClient } from '@apollo/client/core';
-import {
-  AppInfoResponse,
-  AppWebsocket,
-  CellId,
-  InstalledAppId,
-} from '@holochain/conductor-api';
+import { ApolloClient, DocumentNode } from '@apollo/client/core';
+import { AppInfoResponse, CellId } from '@holochain/conductor-api';
 import { Base64 } from 'js-base64';
 
 export function deserializeHash(hash: string): Uint8Array {
@@ -41,4 +36,16 @@ export function getCellIdForDnaHash(
   if (!cell) throw new Error(`Could not find cell for dna ${dnaHash}`);
 
   return cell[0];
+}
+
+export function clientIncludesTypeDefs(
+  apolloClient: ApolloClient<any>,
+  typeDefsToCheck: Array<DocumentNode>
+): boolean {
+  if (!Array.isArray(apolloClient.typeDefs)) return false;
+
+  for (const typeDef of typeDefsToCheck) {
+    if (!apolloClient.typeDefs.includes(typeDef as any)) return false;
+  }
+  return true;
 }
