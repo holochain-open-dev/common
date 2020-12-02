@@ -20,7 +20,7 @@ export async function setupApolloClient(appWebsocket) {
     typeDefs: allTypeDefs,
     resolvers: [
       rootResolvers(cellId),
-      commonResolvers(appWebsocket, 'test-app'),
+      await commonResolvers(appWebsocket, 'test-app'),
     ],
     inheritResolversFromInterfaces: true,
   });

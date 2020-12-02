@@ -3,17 +3,16 @@ import { AppWebsocket, InstalledAppId } from '@holochain/conductor-api';
 import { getCellIdForDnaHash, serializeHash } from '../utils';
 import * as msgpack from '@msgpack/msgpack';
 
-export function commonResolvers(
+export async function commonResolvers(
   appWebsocket: AppWebsocket,
   installedAppId: InstalledAppId,
   zomeName = 'common'
-): Resolvers {
+): Promise<Resolvers> {
+  const appInfo = await appWebsocket.appInfo({
+    installed_app_id: installedAppId,
+  });
   async function callZome(dnaHash: string, fn_name: string, payload: any) {
-    const cellId = await getCellIdForDnaHash(
-      appWebsocket,
-      installedAppId,
-      dnaHash
-    );
+    const cellId = getCellIdForDnaHash(appInfo, dnaHash);
     return appWebsocket.callZome({
       cap: null as any,
       cell_id: cellId,
