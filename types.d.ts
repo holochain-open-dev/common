@@ -8,9 +8,9 @@ export interface HolochainEntryDetails {
 }
 export interface Header {
     id: string;
-    author: Agent;
+    author: HolochainAgent;
 }
-export interface Agent {
+export interface HolochainAgent {
     id: string;
 }
 export interface Membrane {
