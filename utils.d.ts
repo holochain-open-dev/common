@@ -1,4 +1,5 @@
 import { ApolloClient } from '@apollo/client/core';
+import { AppWebsocket, CellId, InstalledAppId } from '@holochain/conductor-api';
 export declare function deserializeHash(hash: string): Uint8Array;
 export declare function serializeHash(hash: Uint8Array): string;
 /**
@@ -6,3 +7,4 @@ export declare function serializeHash(hash: Uint8Array): string;
  * The result is ready to call customElements.define()
  */
 export declare function setupApolloClientElement(element: any, apolloClient: ApolloClient<any>): typeof HTMLElement;
+export declare function getCellIdForDnaHash(appWebsocket: AppWebsocket, installedAppId: InstalledAppId, dnaHash: string): Promise<CellId>;

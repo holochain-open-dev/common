@@ -1,14 +1,5 @@
-import { serializeHash } from '../utils';
+import { getCellIdForDnaHash, serializeHash } from '../utils';
 import * as msgpack from '@msgpack/msgpack';
-export async function getCellIdForDnaHash(appWebsocket, installedAppId, dnaHash) {
-    const appInfo = await appWebsocket.appInfo({
-        installed_app_id: installedAppId,
-    });
-    const cell = appInfo.cell_data.find(cellData => serializeHash(cellData[0][0]) === dnaHash);
-    if (!cell)
-        throw new Error(`Could not find cell for dna ${dnaHash}`);
-    return cell[0];
-}
 export function commonResolvers(appWebsocket, installedAppId, zomeName = 'common') {
     async function callZome(dnaHash, fn_name, payload) {
         const cellId = await getCellIdForDnaHash(appWebsocket, installedAppId, dnaHash);
@@ -27,6 +18,7 @@ export function commonResolvers(appWebsocket, installedAppId, zomeName = 'common
                 const appInfo = await appWebsocket.appInfo({
                     installed_app_id: installedAppId,
                 });
+                // We can assume this because in a happ all public keys are the same
                 const myAgentPubKey = appInfo.cell_data[0][0][1];
                 return {
                     id: serializeHash(myAgentPubKey),
