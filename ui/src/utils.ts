@@ -1,5 +1,5 @@
 import { ApolloClient } from '@apollo/client/core';
-import { CellId } from '@holochain/conductor-api';
+import { AppWebsocket, CellId, InstalledAppId } from '@holochain/conductor-api';
 import { Base64 } from 'js-base64';
 
 export function deserializeHash(hash: string): Uint8Array {
@@ -23,4 +23,22 @@ export function setupApolloClientElement(
       return apolloClient;
     }
   } as any) as typeof HTMLElement;
+}
+
+export async function getCellIdForDnaHash(
+  appWebsocket: AppWebsocket,
+  installedAppId: InstalledAppId,
+  dnaHash: string
+): Promise<CellId> {
+  const appInfo = await appWebsocket.appInfo({
+    installed_app_id: installedAppId,
+  });
+
+  const cell = appInfo.cell_data.find(
+    cellData => serializeHash(cellData[0][0]) === dnaHash
+  );
+
+  if (!cell) throw new Error(`Could not find cell for dna ${dnaHash}`);
+
+  return cell[0];
 }

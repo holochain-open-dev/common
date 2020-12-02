@@ -3,7 +3,7 @@ import { gql } from '@apollo/client/core';
 export const commonTypeDefs = gql`
   scalar Date
 
-  type Agent {
+  type HolochainAgent {
     id: ID!
   }
 
@@ -20,7 +20,7 @@ export const commonTypeDefs = gql`
   type Header {
     id: ID!
 
-    author: Agent!
+    author: HolochainAgent!
     timestamp: Date!
     previous: Header
   }
@@ -31,7 +31,7 @@ export const commonTypeDefs = gql`
   }
 
   extend type Query {
-    me: Agent!
+    me: HolochainAgent!
   }
 
   interface CommonMembrane implements Membrane {

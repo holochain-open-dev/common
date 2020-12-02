@@ -1,26 +1,7 @@
 import { Resolvers } from '@apollo/client/core';
-import { AppWebsocket, CellId, InstalledAppId } from '@holochain/conductor-api';
-import { Membrane } from '../types';
-import { deserializeHash, serializeHash } from '../utils';
+import { AppWebsocket, InstalledAppId } from '@holochain/conductor-api';
+import { getCellIdForDnaHash, serializeHash } from '../utils';
 import * as msgpack from '@msgpack/msgpack';
-
-export async function getCellIdForDnaHash(
-  appWebsocket: AppWebsocket,
-  installedAppId: InstalledAppId,
-  dnaHash: string
-): Promise<CellId> {
-  const appInfo = await appWebsocket.appInfo({
-    installed_app_id: installedAppId,
-  });
-
-  const cell = appInfo.cell_data.find(
-    cellData => serializeHash(cellData[0][0]) === dnaHash
-  );
-
-  if (!cell) throw new Error(`Could not find cell for dna ${dnaHash}`);
-
-  return cell[0];
-}
 
 export function commonResolvers(
   appWebsocket: AppWebsocket,
@@ -49,6 +30,7 @@ export function commonResolvers(
           installed_app_id: installedAppId,
         });
 
+        // We can assume this because in a happ all public keys are the same
         const myAgentPubKey = appInfo.cell_data[0][0][1];
 
         return {
