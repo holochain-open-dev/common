@@ -16,10 +16,7 @@ export function setupApolloClientElement(element, apolloClient) {
         }
     };
 }
-export async function getCellIdForDnaHash(appWebsocket, installedAppId, dnaHash) {
-    const appInfo = await appWebsocket.appInfo({
-        installed_app_id: installedAppId,
-    });
+export function getCellIdForDnaHash(appInfo, dnaHash) {
     const cell = appInfo.cell_data.find(cellData => serializeHash(cellData[0][0]) === dnaHash);
     if (!cell)
         throw new Error(`Could not find cell for dna ${dnaHash}`);

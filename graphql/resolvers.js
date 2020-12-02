@@ -1,8 +1,11 @@
 import { getCellIdForDnaHash, serializeHash } from '../utils';
 import * as msgpack from '@msgpack/msgpack';
-export function commonResolvers(appWebsocket, installedAppId, zomeName = 'common') {
+export async function commonResolvers(appWebsocket, installedAppId, zomeName = 'common') {
+    const appInfo = await appWebsocket.appInfo({
+        installed_app_id: installedAppId,
+    });
     async function callZome(dnaHash, fn_name, payload) {
-        const cellId = await getCellIdForDnaHash(appWebsocket, installedAppId, dnaHash);
+        const cellId = getCellIdForDnaHash(appInfo, dnaHash);
         return appWebsocket.callZome({
             cap: null,
             cell_id: cellId,
