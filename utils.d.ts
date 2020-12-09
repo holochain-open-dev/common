@@ -1,4 +1,4 @@
-import { ApolloClient } from '@apollo/client/core';
+import { ApolloClient, DocumentNode } from '@apollo/client/core';
 import { AppInfoResponse, CellId } from '@holochain/conductor-api';
 export declare function deserializeHash(hash: string): Uint8Array;
 export declare function serializeHash(hash: Uint8Array): string;
@@ -8,3 +8,4 @@ export declare function serializeHash(hash: Uint8Array): string;
  */
 export declare function setupApolloClientElement(element: any, apolloClient: ApolloClient<any>): typeof HTMLElement;
 export declare function getCellIdForDnaHash(appInfo: AppInfoResponse, dnaHash: string): CellId;
+export declare function clientIncludesTypeDefs(apolloClient: ApolloClient<any>, typeDefsToCheck: Array<DocumentNode>): boolean;

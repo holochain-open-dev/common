@@ -22,4 +22,13 @@ export function getCellIdForDnaHash(appInfo, dnaHash) {
         throw new Error(`Could not find cell for dna ${dnaHash}`);
     return cell[0];
 }
+export function clientIncludesTypeDefs(apolloClient, typeDefsToCheck) {
+    if (!Array.isArray(apolloClient.typeDefs))
+        return false;
+    for (const typeDef of typeDefsToCheck) {
+        if (!apolloClient.typeDefs.includes(typeDef))
+            return false;
+    }
+    return true;
+}
 //# sourceMappingURL=utils.js.map
