@@ -27,6 +27,11 @@ export async function commonResolvers(appWebsocket, installedAppId, zomeName = '
                     id: serializeHash(myAgentPubKey),
                 };
             },
+            membrane(_, { membraneId }) {
+                return {
+                    id: membraneId,
+                };
+            },
         },
         CommonMembrane: {
             async get(commonMembrane, { entryId }) {
