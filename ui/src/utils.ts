@@ -1,6 +1,7 @@
 import { ApolloClient, DocumentNode } from '@apollo/client/core';
 import { AppInfoResponse, CellId } from '@holochain/conductor-api';
 import { Base64 } from 'js-base64';
+import { Timestamp } from './core-types/timestamp';
 
 export function deserializeHash(hash: string): Uint8Array {
   return Base64.toUint8Array(hash.slice(1));
@@ -48,4 +49,18 @@ export function clientIncludesTypeDefs(
     if (!apolloClient.typeDefs.includes(typeDef as any)) return false;
   }
   return true;
+}
+
+export function millisToTimestamp(millis: number): Timestamp {
+  const secs = Math.floor(millis / 1000);
+  const nanos = (millis % 1000) * 1000;
+  return [secs, nanos];
+}
+
+export function timestampToMillis(timestamp: Timestamp): number {
+  return timestamp[0] * 1000 + Math.floor(timestamp[1] / 1000);
+}
+
+export function now(): Timestamp {
+  return millisToTimestamp(Date.now());
 }

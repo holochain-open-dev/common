@@ -32,6 +32,8 @@ export const commonTypeDefs = gql`
 
   extend type Query {
     me: HolochainAgent!
+
+    membrane(membraneId: ID!): Membrane!
   }
 
   interface CommonMembrane implements Membrane {
