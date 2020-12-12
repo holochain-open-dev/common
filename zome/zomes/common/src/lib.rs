@@ -6,7 +6,7 @@ use hdk3::prelude::*;
 pub struct DetailsResult(Option<EntryDetails>);
 #[hdk_extern]
 pub fn get_entry_details(entry_hash: WrappedEntryHash) -> ExternResult<DetailsResult> {
-    let details = get_details(entry_hash.0, GetOptions)?;
+    let details = get_details(entry_hash.0, GetOptions::default())?;
 
     let result = match details {
         None | Some(Details::Element(_)) => None,
