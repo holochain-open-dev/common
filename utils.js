@@ -5,31 +5,11 @@ export function deserializeHash(hash) {
 export function serializeHash(hash) {
     return `u${Base64.fromUint8Array(hash, true)}`;
 }
-/**
- * Setups the given element with the ApolloClient dependency
- * The result is ready to call customElements.define()
- */
-export function setupApolloClientElement(element, apolloClient) {
-    return class extends element {
-        get _apolloClient() {
-            return apolloClient;
-        }
-    };
-}
 export function getCellIdForDnaHash(appInfo, dnaHash) {
     const cell = appInfo.cell_data.find(cellData => serializeHash(cellData[0][0]) === dnaHash);
     if (!cell)
         throw new Error(`Could not find cell for dna ${dnaHash}`);
     return cell[0];
-}
-export function clientIncludesTypeDefs(apolloClient, typeDefsToCheck) {
-    if (!Array.isArray(apolloClient.typeDefs))
-        return false;
-    for (const typeDef of typeDefsToCheck) {
-        if (!apolloClient.typeDefs.includes(typeDef))
-            return false;
-    }
-    return true;
 }
 export function millisToTimestamp(millis) {
     const secs = Math.floor(millis / 1000);
