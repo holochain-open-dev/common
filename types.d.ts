@@ -1,4 +1,4 @@
-export interface Hashed {
-    entry_hash: string;
-    entry: string;
+export interface Hashed<T> {
+    hash: string;
+    content: T;
 }
