@@ -1,4 +1,3 @@
-import { ApolloClient, DocumentNode } from '@apollo/client/core';
 import { AppInfoResponse, CellId } from '@holochain/conductor-api';
 import { Base64 } from 'js-base64';
 import { Timestamp } from './core-types/timestamp';
