@@ -1,1 +1,0 @@
-{"version":3,"file":"element.js","sourceRoot":"","sources":["../../src/core-types/element.ts"],"names":[],"mappings":"","sourcesContent":["import { Entry } from './entry';\nimport { Header } from './header';\n\nexport type Element = {\n  header: Header;\n  maybe_entry: Entry | undefined;\n};\n"]}

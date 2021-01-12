@@ -26,6 +26,7 @@
     "publish-to-branch": "npm run lint && npm run build && cp package.json dist && gh-pages -d dist -b ui-build"
   },
   "dependencies": {
+    "@holochain-open-dev/core-types": "git+https://github.com/holochain-open-dev/core-types.git#build",
     "@holochain/conductor-api": "0.0.1-dev.13",
     "js-base64": "^3.6.0",
     "lit-element": "^2.4.0",

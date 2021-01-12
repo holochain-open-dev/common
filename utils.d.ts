@@ -1,5 +1,5 @@
 import { AppInfoResponse, CellId } from '@holochain/conductor-api';
-import { Timestamp } from './core-types/timestamp';
+import { Timestamp } from '@holochain-open-dev/core-types';
 export declare function deserializeHash(hash: string): Uint8Array;
 export declare function serializeHash(hash: Uint8Array): string;
 export declare function getCellIdForDnaHash(appInfo: AppInfoResponse, dnaHash: string): CellId;
