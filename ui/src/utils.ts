@@ -1,6 +1,6 @@
 import { AppInfoResponse, CellId } from '@holochain/conductor-api';
 import { Base64 } from 'js-base64';
-import { Timestamp } from './core-types/timestamp';
+import { Timestamp } from '@holochain-open-dev/core-types';
 
 export function deserializeHash(hash: string): Uint8Array {
   return Base64.toUint8Array(hash.slice(1));
