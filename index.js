@@ -1,3 +1,3 @@
 export * from './base-element';
-export * from './store-element';
+export * from './deps-element';
 //# sourceMappingURL=index.js.map
