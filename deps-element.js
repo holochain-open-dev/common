@@ -1,5 +1,6 @@
+import { MobxReactionUpdate } from '@adobe/lit-mobx';
 import { BaseElement } from './base-element';
-export class DepsElement extends BaseElement {
+export class DepsElement extends MobxReactionUpdate(BaseElement) {
 }
 export function connectDeps(baseClass, deps) {
     return class extends baseClass {
