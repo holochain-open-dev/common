@@ -35,7 +35,6 @@ export class ContextController<
   private dispose?: () => void;
 
   hostConnected(): void {
-      console.log('hi')
     this.host.dispatchEvent(
       new ContextEvent(this.name, (value, dispose) => {
         if (this.dispose && this.dispose !== dispose) {
@@ -45,7 +44,7 @@ export class ContextController<
         this.callback(value, dispose);
         this.dispose = dispose;
       })
-    ); 
+    );
   }
 
   hostDisconnected(): void {
