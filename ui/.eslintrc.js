@@ -20,5 +20,6 @@ module.exports = {
     'import/named': 'off',
     'import/no-unresolved': 'off',
     'import/extensions': 'off',
+    '@typescript-eslint/no-empty-interface': 'off'
   },
 };

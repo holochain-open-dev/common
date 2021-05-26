@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        background: #fafafa;
+      }
+    </style>
+  </head>
+  <body>
+    <context-provider id="provider" name="count"
+      ><sample-element id="consumer"></sample-element>
+    </context-provider>
+
+    <script type="module">
+      import { html, render } from 'lit';
+      import { ContextProviderElement, SampleElement } from '../dist';
+
+      customElements.define('context-provider', ContextProviderElement);
+      const provider = document.getElementById('provider');
+      provider.value = 10;
+      customElements.define('sample-element', SampleElement);
+
+    </script>
+  </body>
+</html>
