@@ -25,7 +25,6 @@ export class ContextController {
         host.addController(this);
     }
     hostConnected() {
-        console.log('hi');
         this.host.dispatchEvent(new ContextEvent(this.name, (value, dispose) => {
             if (this.dispose && this.dispose !== dispose) {
                 // we already have a value, lets cleanup before we take the new one
